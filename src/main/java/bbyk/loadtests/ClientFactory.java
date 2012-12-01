@@ -30,6 +30,7 @@ public class ClientFactory {
         SockIOPool pool = SockIOPool.getInstance();
         final String[] strAddresses = Iterables.toArray(Iterables.transform(Arrays.asList(addresses),
                 new Function<InetSocketAddress, String>() {
+                    @Override
                     public String apply(InetSocketAddress address) {
                         return address.getHostName() + ':' + address.getPort();
                     }
@@ -63,10 +64,12 @@ public class ClientFactory {
                     final net.spy.memcached.MemcachedClient c = new net.spy.memcached.MemcachedClient(spyBuilder.build(),
                             Arrays.asList(addresses));
 
+                    @Override
                     public byte[] get(@NotNull String key) {
                         return (byte[]) c.get(key);
                     }
 
+                    @Override
                     public void set(@NotNull String key, byte[] buffer) {
                         c.set(key, 0, buffer);
                     }
@@ -75,10 +78,12 @@ public class ClientFactory {
                 return new BasicMemcachedClient() {
                     final MemCachedClient c = new MemCachedClient();
 
+                    @Override
                     public byte[] get(@NotNull String key) {
                         return (byte[]) c.get(key);
                     }
 
+                    @Override
                     public void set(@NotNull String key, @Nullable byte[] buffer) {
                         c.set(key, buffer);
                     }
@@ -91,6 +96,7 @@ public class ClientFactory {
                 return new BasicMemcachedClient() {
                     final net.rubyeye.xmemcached.MemcachedClient c = xbuilder.build();
 
+                    @Override
                     public byte[] get(@NotNull String key) {
                         try {
                             return (byte[]) c.get(key);
@@ -99,6 +105,7 @@ public class ClientFactory {
                         }
                     }
 
+                    @Override
                     public void set(@NotNull String key, @Nullable byte[] buffer) {
                         try {
                             c.set(key, 0, buffer);

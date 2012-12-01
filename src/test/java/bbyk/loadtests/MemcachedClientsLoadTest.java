@@ -105,7 +105,7 @@ public class MemcachedClientsLoadTest {
         final CountDownLatch allDone = new CountDownLatch(totalNumberOfRequests);
         final String actorPrefix = StringUtils.replace(UUID.randomUUID().toString(), "-", "");
         final AtomicInteger errorCount = new AtomicInteger();
-        final ConcurrentHashMap<Class, Exception> errorSet = new ConcurrentHashMap<Class, Exception>();
+        final ConcurrentHashMap<Class<? extends Exception>, Exception> errorSet = new ConcurrentHashMap<Class<? extends Exception>, Exception>();
         final ClientFactory clientFactory = new ClientFactory(setup, addresses);
         final AtomicInteger transactionCount = new AtomicInteger();
         final AtomicInteger reqCount = new AtomicInteger();
@@ -130,6 +130,7 @@ public class MemcachedClientsLoadTest {
 
         // let's emulate IO thread the feeds our threadpool with requests.
         final Thread ioThread = new Thread(new Runnable() {
+            @Override
             public void run() {
                 try {
                     final int tickIntervalMs = 200;
@@ -156,6 +157,7 @@ public class MemcachedClientsLoadTest {
                             final int actorId = requests[i + j];
 
                             executorService.submit(new Runnable() {
+                                @Override
                                 public void run() {
 
                                     // here we emulate that requests from one actor are serialized.
